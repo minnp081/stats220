@@ -1,0 +1,128 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+# load package
+library(tidyverse)
+```
+
+```{css}
+body {
+  padding: 50px
+  background: #ecd2e0;
+  font-family: "Lucida Console", "Courier New", monospace;
+}
+
+h2 {
+  color: #f9f9f9;
+  background-color: #424458;
+  padding: 8px;
+  border-radius: 15px;
+  text-align: center;
+}
+
+h3 {
+  color: #f9f9f9;
+  background-color: #9699c7;
+  padding: 8px;
+  border-radius: 15px;
+  text-align: center;
+}
+
+h4 {
+  background-color: #ced1f8;
+  padding: 8px;
+  border-radius: 15px;
+}
+
+```
+
+## TikTok Ad Personalization Analysis
+
+This report presents the findings from the survey we created on how TikTok personalise ads based on user activity, including video interactions, searches, and past engagements with brands.
+
+### The Dataset
+The dataset used to create the summary values, and bar charts came from our survey. It consists of responses that came from observational logging.
+
+```{r}
+# data
+csv_file <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJkTb1AzZtdJ6tgBMZ4fMYp3HK1INAZQ4Mnx9RbkC2Lfh7TBvDXDUNS6YGLyreJzCAsUWD-OG9HYjd/pub?output=csv"
+
+logged_data <- read_csv(csv_file)
+
+# renaming variables
+latest_data <- logged_data %>%
+  rename(
+    ad_length = 2,
+    prior_search = 3,
+    prior_interaction =  4,
+    brand_awareness = 5,
+    post_ad_action = 6,
+    location_match = 7,
+    ad_relevance = 8
+  )
+
+# summary values
+avg_ad_length <- mean(latest_data$ad_length)
+
+avg_ad_relevance <- mean(latest_data$ad_relevance)
+
+most_common_post_ad_action <- names(which.max(table(latest_data$post_ad_action)))
+
+```
+
+### **Summary Values**
+- **Average Ad Length:** `r avg_ad_length`
+- **Average Ad Relevance Score:** `r avg_ad_relevance`
+- **Most Common Post-Ad Action:** `r most_common_post_ad_action`
+
+
+### **Bar Charts**
+
+#### **Ad Relevance Score by Prior Search Behavior**
+
+```{r}
+# bar chart 2: Ad Relevance Score by Prior Search Behavior
+bar_chart_2 <- latest_data %>%
+  ggplot() +
+  geom_bar(aes(x = ad_relevance, fill = prior_search)) +
+  labs(title = "Ad Relevance Score by Prior Search Behavior",
+       x = "Ad Relevance Score",
+       y = "Count",
+       fill = "Prior Search")
+print(bar_chart_2)
+```
+
+#### **Ad Relevance Score by Brand Awareness**
+
+```{r}
+# bar chart 5: Ad Relevance Score by Brand Awareness
+bar_chart_5 <- latest_data %>%
+  ggplot() +
+  geom_bar(aes(y = ad_relevance, fill = brand_awareness)) + 
+  labs(title = "Ad Relevance Score by Brand Awareness",
+       x = "Count",
+       y = "Ad Relevance Score",
+       fill = "Brand Awareness")
+
+print(bar_chart_5)
+```
+
+#### **Post-Ad Actions by Prior Search Behavior**
+
+```{r}
+# bar chart 7: Post-Ad Actions by Prior Search Behavior
+bar_chart_7 <- latest_data %>%
+  ggplot() +
+  geom_bar(aes(x = post_ad_action, fill = prior_search)) + 
+  labs(title = "Post-Ad Actions by Prior Search Behavior",
+       x = "Post-Ad Action",
+       y = "Count",
+       fill = "Prior Search")
+
+print(bar_chart_7)
+```
