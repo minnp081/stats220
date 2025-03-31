@@ -8,6 +8,7 @@ knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
 
 # load package
 library(tidyverse)
+library(magick)
 ```
 
 ```{css}
@@ -66,6 +67,10 @@ latest_data <- logged_data %>%
     ad_relevance = 8
   )
 
+# picture of survey
+survey_img <- image_read("survey.png") %>%
+  image_scale(600)
+
 # summary values
 avg_ad_length <- mean(latest_data$ad_length)
 
@@ -74,6 +79,11 @@ avg_ad_relevance <- mean(latest_data$ad_relevance)
 most_common_post_ad_action <- names(which.max(table(latest_data$post_ad_action)))
 
 ```
+
+### **Survey**
+This picture is a part of what the survey looks like.
+
+`r survey_img`
 
 ### **Summary Values**
 - **Average Ad Length:** `r avg_ad_length`
